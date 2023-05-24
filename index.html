@@ -1,0 +1,108 @@
+<html>
+    <head>
+        <!-- MDUI CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css" integrity="sha384-cLRrMq39HOZdvE0j6yBojO4+1PrHfB7a9l5qLcmRm/fiWXYY+CndJPmyu5FV/9Tw" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <meta charset="utf-8">
+        <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+        <title>G9 Score Prediction-Beta </title>
+    </head>
+    <body class="mdui-typo mdui-theme-primary-indigo mdui-theme-accent-pink" style="border: none; padding-top: 60px;">
+        <div id="app" class="main">
+            <header>    <!--Header-->
+                <div class="mdui-appbar-fixed mdui-appbar">
+                    <div class="mdui-toolbar mdui-color-theme mdui-shadow-2">
+                        <i class="mdui-icon material-icons">info</i>
+                        <span class="mdui-typo-title">G9 Score Perdiction</span>
+                    </div>
+                </div>
+            </header>
+            <div class="mdui-card mdui-container" style="margin-top: 35px;"><!--info-->
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">About</div>
+                    <div class="mdui-card-primary-subtitle">Instructions</div>
+                </div>
+                <div class="mdui-card-content">
+                    <p>1. Enter your current grade in each subject</p>
+                    <p>2. Click the button</p>
+                    <p>3. The result will be shown below</p>
+                    <p>Notice that it is only a demo, the empty data will automaticlly transfered to average.</p>
+                    <p>The result will note be entirely accurate , you should only use this as a refrence</p>
+                </div>
+            </div>
+            <!--input score in each course-->
+            
+            <div class="mdui-container" style="margin-top: 35px;">
+                <center>
+                    <table class="mdui-table" style="">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(course, index) in courses" :key="index">
+                                <td>{{ course }}</td>
+                                <td><input type="number" min="0" max="100" v-model="grades[index]"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </center>
+            </div>
+
+            <center class="mdui-container" style="margin-top: 35px; margin-bottom: 35px;">
+                <button @click="submit"  class="mdui-btn mdui-btn-block mdui-card mdui-color-theme-accent mdui-ripple mdui-container" style="height: 50px;"  >Click Here To Perdict</button>
+            </center>
+            <!--Show Result when there is a Result as a list of courses-->
+            <div class="mdui-container" style="margin-top: 35px;" v-if="predictedScore != 0">
+                <center >
+                  <table class="mdui-table">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Predicted Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(score, course) in predictedScore" :key="course">
+                                <td>{{ course }}</td>
+                                <td>{{ score.toFixed(2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </center>
+            </div>
+        </div>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    courses: ['AP 2D Art and Design', 'AP Computer Science Principles', 'AP Music Theory', 'AP Physics 1', 'Art Design', 'C-Humanities', 'CSL', 'Chinese Culture', 'Drama I', 'English I', 'IGCSE Biology (Accelerated)', 'IGCSE Combined Science (Year 1)', 'IGCSE Economics (Year 1)', 'IGCSE English Literature (Year 1)', 'IGCSE History (Year 1)', 'IGCSE Math (Accelerated)', 'IGCSE Math (Year 1)', 'IT (Year 1)', 'IT (Year 2)', 'Music', 'PE', 'Spanish I', 'Spanish II', 'World History I'],
+                    grades: new Array(24).fill(''),
+                    predictedScore: ''
+                },
+                methods: {
+                async submit() {
+                    console.log(this.grades);
+                    // configure the array of grades into json
+                    const grades_json = JSON.stringify(this.grades);
+                    // send the json to the server's flask function named 'predict'
+                    const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: grades_json
+                    });
+                    const data = await response.json();
+                    this.predictedScore = data;
+                    console.log
+                    console.log(data)
+                    console.log(this.predictedScore);
+                }
+}
+            })
+        </script>
+    </body>
+</html>
