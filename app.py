@@ -21,7 +21,7 @@ def predict( ):
 
     print('got request')
 
-    # Load the models
+    # Load the models   
     models = pickle.load(open('model.sav','rb'))
     
     # Get the input grades from the request data

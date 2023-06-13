@@ -100,6 +100,10 @@
                     console.log
                     console.log(data)
                     console.log(this.predictedScore);
+                    // Sort Predicted Score from High to Low
+                    this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).sort(([,a],[,b]) => b-a));
+                    // Get the first three highest scores
+                    this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).slice(0, 3));
                 }
 }
             })

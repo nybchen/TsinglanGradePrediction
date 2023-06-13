@@ -17,9 +17,6 @@ grade_dict = {'A+': 97, 'A': 93, 'A-': 90, 'B+': 87, 'B': 83, 'B-': 80,'C+': 77,
 X = pd.read_csv('X_g9.csv')
 Y = pd.read_csv('X_g10.csv')
 
-X = X.drop('No.',axis=1)
-Y = Y.drop('No.',axis=1)
-
 # replace N to 0
 X = X.replace('N', np.nan)
 Y = Y.replace('N', np.nan)
@@ -28,37 +25,38 @@ X = X.replace(grade_dict)
 Y = Y.replace(grade_dict)
 
 # Fill in the null Score
-imputer = SimpleImputer(strategy='most_frequent')
+imputer = SimpleImputer(strategy='mean')
 X = imputer.fit_transform(X)
 Y = imputer.fit_transform(Y)
+
 
 # Define a dictionary to store the models for each grade 10 subject
 models = {}
 
 
-# # Train a linear regression model for each grade 10 subject
-# for subject in grade10_courses:
-#     index = grade10_courses.index(subject)
-#     Y_scores = Y[:, index]
-#     model = RandomForestRegressor(n_estimators=50, max_depth=5, random_state=5)
-#     # Fit the model
-#     model.fit(X, Y_scores.reshape(-1, 1))
-#     # Store the model
-#     models[subject] = model
-# # Save the models to disk
-# filename = 'model.sav'
-# pickle.dump(models, open(filename, 'wb'))
+# Train a randomforest model for each grade 10 subject
+for subject in grade10_courses:
+    index = grade10_courses.index(subject)
+    Y_scores = Y[:, index]
+    model = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=0)
+    # Fit the model
+    model.fit(X, Y_scores)
+    # Store the model
+    models[subject] = model
+# Save the models to disk
+filename = 'model.sav'
+pickle.dump(models, open(filename, 'wb'))
 
 # Load the models from disk
-filename = 'model.sav'
-models = pickle.load(open(filename, 'rb'))
+# filename = 'model.sav'
+# models = pickle.load(open(filename, 'rb'))
 
 
 # Load one student for Testing
 X_test = pd.read_csv('student_g9.csv')
 X_test = X_test.replace('N', np.nan)
 X_test = X_test.replace(grade_dict)
-imputer = SimpleImputer(strategy='most_frequent')
+imputer = SimpleImputer(strategy='mean')
 imputer.fit(X)
 
 # Use imputer to fill in missing values in X_test with most frequent values from X
@@ -74,12 +72,9 @@ for subject in grade10_courses:
     score = model.predict(X_test)
     scores[subject] = score[0]
     # jump the courses that the student had taken in grade 9 or the student had already take igcse math accelerated in grade 9, which means the student will not take igcse math in grade 10 IT Class is excluded
-    if subject in grade9_courses:
-        scores[subject] = 'N/A'
-    if subject == 'IGCSE Math (Accelerated)':
-        scores[subject] = 'N/A'
     
 
+print(scores)
 # Write the scores to a CSV file using Pandas
 df = pd.DataFrame([scores], index=['Scores'])
 df.to_csv('scores.csv', index=True, header=True)
