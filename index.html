@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
         <meta charset="utf-8">
         <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-        <title>G9 Score Prediction-Beta </title>
+        <title>G9 Score Recommendation </title>
     </head>
     <body class="mdui-typo mdui-theme-primary-indigo mdui-theme-accent-pink" style="border: none; padding-top: 60px;">
         <div id="app" class="main">
@@ -60,14 +60,11 @@
                   <table class="mdui-table">
                         <thead>
                             <tr>
-                                <th>Course</th>
-                                <th>Predicted Score</th>
-                            </tr>
+                                <th>Top 5 Course that You may do well on:</th>
                         </thead>
                         <tbody>
                             <tr v-for="(score, course) in predictedScore" :key="course">
                                 <td>{{ course }}</td>
-                                <td>{{ score.toFixed(2) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -103,7 +100,7 @@
                     // Sort Predicted Score from High to Low
                     this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).sort(([,a],[,b]) => b-a));
                     // Get the first three highest scores
-                    this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).slice(0, 3));
+                    this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).slice(0, 5));
                 }
 }
             })
