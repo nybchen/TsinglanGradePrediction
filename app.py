@@ -13,6 +13,9 @@ grade9_courses = ['AP 2D Art and Design', 'AP Computer Science Principles', 'AP 
 
 # Load the training data used to train the model
 X = pd.read_csv('X_G9.csv')
+X = X.replace('N', np.nan)
+grade_dict = {'A+': 97, 'A': 93, 'A-': 90, 'B+': 87, 'B': 83, 'B-': 80,'C+': 77, 'C': 73, 'C-': 70, 'D+': 67, 'D': 63, 'D-': 60, 'F': 0}
+X = X.replace(grade_dict)
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -41,7 +44,7 @@ def predict( ):
     print(X_test)
 
     # Use imputer to fill in missing values in X_test with most frequent values from X
-    imputer = SimpleImputer(strategy='most_frequent')
+    imputer = SimpleImputer(strategy='mean')
     imputer.fit(X)
     X_test = imputer.transform(X_test)
 
@@ -50,7 +53,7 @@ def predict( ):
     for subject in grade10_courses:
         model = models[subject]
         score = model.predict(X_test)
-        scores[subject] = score[0]
+        scores[subject] = score.tolist()[0]
     print(scores)
     return scores
 

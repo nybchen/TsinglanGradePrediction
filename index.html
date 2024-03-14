@@ -26,7 +26,7 @@
                     <p>1. Enter your current grade in each subject</p>
                     <p>2. Click the button</p>
                     <p>3. The result will be shown below</p>
-                    <p>Notice that it is only a demo, the empty data will automaticlly transfered to average.</p>
+                    <p>Please Notice that this project is only a demo, the empty data will automaticlly transfered to average.</p>
                     <p>The result will note be entirely accurate , you should only use this as a refrence</p>
                 </div>
             </div>
@@ -51,20 +51,28 @@
                 </center>
             </div>
 
-            <center class="mdui-container" style="margin-top: 35px; margin-bottom: 35px;">
+            <center class="mdui-container" style="margin-top: 35px; margin-bottom: 35px;" v-if="isLoading === false">
                 <button @click="submit"  class="mdui-btn mdui-btn-block mdui-card mdui-color-theme-accent mdui-ripple mdui-container" style="height: 50px;"  >Click Here To Perdict</button>
             </center>
+            <div class="mdui-container" style="margin-top: 35px;" v-if="isLoading === true">
+                <center>
+                    <div class="mdui-spinner mdui-spinner-colorful"></div>
+                </center>
+            </div>
             <!--Show Result when there is a Result as a list of courses-->
             <div class="mdui-container" style="margin-top: 35px;" v-if="predictedScore != 0">
                 <center >
-                  <table class="mdui-table">
+                  <table class="mdui-table" style="margin-bottom: 30px;">
                         <thead>
                             <tr>
-                                <th>Top 5 Course that You may do well on:</th>
+                                <th>Top 10 Courses that You may do well on:</th>
+                                <th>Predicted Score</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(score, course) in predictedScore" :key="course">
                                 <td>{{ course }}</td>
+                                <td>{{ parseFloat(score).toFixed(2) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -77,7 +85,8 @@
                 data: {
                     courses: ['AP 2D Art and Design', 'AP Computer Science Principles', 'AP Music Theory', 'AP Physics 1', 'Art Design', 'C-Humanities', 'CSL', 'Chinese Culture', 'Drama I', 'English I', 'IGCSE Biology (Accelerated)', 'IGCSE Combined Science (Year 1)', 'IGCSE Economics (Year 1)', 'IGCSE English Literature (Year 1)', 'IGCSE History (Year 1)', 'IGCSE Math (Accelerated)', 'IGCSE Math (Year 1)', 'IT (Year 1)', 'IT (Year 2)', 'Music', 'PE', 'Spanish I', 'Spanish II', 'World History I'],
                     grades: new Array(24).fill(''),
-                    predictedScore: ''
+                    predictedScore: '',
+                    isLoading: false
                 },
                 methods: {
                 async submit() {
@@ -86,13 +95,14 @@
                     const grades_json = JSON.stringify(this.grades);
                     // send the json to the server's flask function named 'predict'
                     const response = await fetch('http://127.0.0.1:5000/predict', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: grades_json
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: grades_json
                     });
-                    const data = await response.json();
+                    isLoading = true;
+                    const data = await response.json();              
                     this.predictedScore = data;
                     console.log
                     console.log(data)
@@ -100,7 +110,8 @@
                     // Sort Predicted Score from High to Low
                     this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).sort(([,a],[,b]) => b-a));
                     // Get the first three highest scores
-                    this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).slice(0, 5));
+                    this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).slice(0, 10));
+                    isLoading = false;
                 }
 }
             })
