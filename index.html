@@ -5,15 +5,14 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
         <meta charset="utf-8">
         <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-        <title>G9 Score Recommendation </title>
+        <title>G9 Course Prediction & Recommendation </title>
     </head>
     <body class="mdui-typo mdui-theme-primary-indigo mdui-theme-accent-pink" style="border: none; padding-top: 60px;">
         <div id="app" class="main">
             <header>    <!--Header-->
                 <div class="mdui-appbar-fixed mdui-appbar">
                     <div class="mdui-toolbar mdui-color-theme mdui-shadow-2">
-                        <i class="mdui-icon material-icons">info</i>
-                        <span class="mdui-typo-title">G9 Score Perdiction</span>
+                        <span class="mdui-typo-title">G9 Course Prediction & Recommendation </span>
                     </div>
                 </div>
             </header>
@@ -23,16 +22,22 @@
                     <div class="mdui-card-primary-subtitle">Instructions</div>
                 </div>
                 <div class="mdui-card-content">
+                    <p>This is a simple tool for Grade 9 students to predict your score in the future based on your current grades</p>
                     <p>1. Enter your current grade in each subject</p>
                     <p>2. Click the button</p>
                     <p>3. The result will be shown below</p>
                     <p>Please Notice that this project is only a demo, the empty data will automaticlly transfered to average.</p>
+                    <p>Due to that courses changes every year, try to input your course to the most similiar one provided in the chart.</p>
+                    &nbsp;
+
                     <p>The result will note be entirely accurate , you should only use this as a refrence</p>
+                    
+                    <p>If you are interested to the theory, please read <a href="https://gpaprediction.be233.com/GPAPredict-Paper.pdf">this paper</a></p>
                 </div>
             </div>
             <!--input score in each course-->
             
-            <div class="mdui-container" style="margin-top: 35px;">
+            <div class="mdui-container" style="margin-top: 35px; margin-bottom: 35px">
                 <center>
                     <table class="mdui-table" style="">
                         <thead>
@@ -54,11 +59,9 @@
             <center class="mdui-container" style="margin-top: 35px; margin-bottom: 35px;" v-if="isLoading === false">
                 <button @click="submit"  class="mdui-btn mdui-btn-block mdui-card mdui-color-theme-accent mdui-ripple mdui-container" style="height: 50px;"  >Click Here To Perdict</button>
             </center>
-            <div class="mdui-container" style="margin-top: 35px;" v-if="isLoading === true">
-                <center>
-                    <div class="mdui-spinner mdui-spinner-colorful"></div>
-                </center>
-            </div>
+            <div class="mdui-progress" v-if="isLoading">
+                <div class="mdui-progress-indeterminate"></div>
+              </div>
             <!--Show Result when there is a Result as a list of courses-->
             <div class="mdui-container" style="margin-top: 35px;" v-if="predictedScore != 0">
                 <center >
@@ -94,6 +97,8 @@
                     // configure the array of grades into json
                     const grades_json = JSON.stringify(this.grades);
                     // send the json to the server's flask function named 'predict'
+                    this.isLoading = true;
+                    console.log(this.isLoading);
                     const response = await fetch('http://127.0.0.1:5000/predict', {
                         method: 'POST',
                         headers: {
@@ -101,7 +106,6 @@
                         },
                         body: grades_json
                     });
-                    isLoading = true;
                     const data = await response.json();              
                     this.predictedScore = data;
                     console.log
@@ -111,10 +115,34 @@
                     this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).sort(([,a],[,b]) => b-a));
                     // Get the first three highest scores
                     this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).slice(0, 10));
-                    isLoading = false;
+                    this.isLoading = false;
                 }
 }
             })
         </script>
     </body>
 </html>
+
+<footer class="page-footer mdui-color-theme mdui-shadow-2">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+            <h5 class="white-text">Description</h5>
+            <p class="grey-text text-lighten-4">Currently in beta version, which is very <b>unstable</b>. If you have any questions, please contact me.</p>
+        </div>
+        <div class="col l4 offset-l2 s12">
+            <h5 class="white-text">More</h5>
+            <ul>
+                <li><a class="grey-text text-lighten-3" href="https://github.com/BChen233/tsinglan_gpa">Repository</a></li>
+                <li><a class="grey-text text-lighten-3" href="mailto:bruno.chen_25@tsinglan.org">Contact Bruno Chen</a></li>
+        </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            Copyright (C) 2024 Bruno Chen</br>
+            Under GNU Affero General Public License v3.0
+        </div>
+    </div>
+</footer>
+  </footer>
