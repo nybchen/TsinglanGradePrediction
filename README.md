@@ -1,6 +1,6 @@
 # TsinglanGradePrediction
  
-This is a simple tool designed for Grade 9 Tsinglan students to predict their future scores based on their current grades. The tool uses Vue.js for the frontend and communicates with a Flask Backend Server to perform the predictions.
+This is a simple tool designed for Grade 9 Tsinglan students to predict their future scores based on their current grades. The tool uses Vue.js and mdui for the frontend and communicates with a Flask Backend Server to perform the predictions.
 
 # Note
 This project is only a demo, The result will not be accurate, and you should only use this as a reference.
