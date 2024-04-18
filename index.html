@@ -32,9 +32,11 @@
 
                     <p>The result will note be entirely accurate , you should only use this as a refrence</p>
                     
-                    <p>If you are interested to the theory, please read <a href="https://gpaprediction.be233.com/GPAPredict-Paper.pdf">this paper</a></p>
+                    <p>If you are interested to the theory of this model, please read <a href="http://gpaprediction.be233.com/GPAPredict-Paper.pdf">this paper</a></p>
                 </div>
             </div>
+            
+            
             <!--input score in each course-->
             
             <div class="mdui-container" style="margin-top: 35px; margin-bottom: 35px">
@@ -54,6 +56,26 @@
                         </tbody>
                     </table>
                 </center>
+            </div>
+
+            <div class="mdui-card mdui-container" style="margin-top: 35px;"><!--info-->
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">Attention</div>
+                    <div class="mdui-card-primary-subtitle">Reasons That Contributes to the Strangeness of Predicted Grades</div>
+                </div>
+                <div class="mdui-card-content">
+                    <p><b>1.</b> The model's predictions may not be entirely accurate as it is trained on data from the previous year. Factors such as changes in curriculum, teaching methods, or individual student performance can influence the actual grades.</p>
+
+                    <p><b>2.</b> It's important to consider that teachers have the discretion to assign grades, and in some cases, they may choose to give higher grades to all students. This can create a perception that the course is easier than it actually is.</p>
+                    
+                    <p><b>3.</b> It's possible that there may be limited data available for specific grade 10 courses, such as when no students who took AP Physics 2 have previously chosen IGCSE Math and Combined Science. This lack of data can impact the model's ability to accurately predict grades for such combinations.</p>
+                    
+                    <p><b>4.</b> Since some grade 10 courses are relatively difficult , it's likely that only a small number of students have taken it so far. Limited data from previous students can affect the model's predictions, making them less reliable.</p>
+                    
+                    <p><b>5.</b> It's important to recognize that the model has many limitations. Ask your college counselor or teacher for advice on course selection.</p>
+                    &nbsp; 
+
+                </div>
             </div>
 
             <center class="mdui-container" style="margin-top: 35px; margin-bottom: 35px;" v-if="isLoading === false">
@@ -129,6 +151,7 @@
         <div class="col l6 s12">
             <h5 class="white-text">Description</h5>
             <p class="grey-text text-lighten-4">Currently in beta version, which is very <b>unstable</b>. If you have any questions, please contact me.</p>
+            <p class="grey-text text-lighten-4">As I am graduating in 2025, if you want to continue this project and benefit more students, please contact me</p>
         </div>
         <div class="col l4 offset-l2 s12">
             <h5 class="white-text">More</h5>
