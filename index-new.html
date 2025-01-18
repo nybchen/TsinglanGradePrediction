@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/mdui@2/mdui.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://unpkg.com/mdui@2/mdui.global.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <div class="mdui-prose">
+                
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            courses: ['AP 2D Art and Design', 'AP Computer Science Principles', 'AP Music Theory', 'AP Physics 1', 'Art Design', 'C-Humanities', 'CSL', 'Chinese Culture', 'Drama I', 'English I', 'IGCSE Biology (Accelerated)', 'IGCSE Combined Science (Year 1)', 'IGCSE Economics (Year 1)', 'IGCSE English Literature (Year 1)', 'IGCSE History (Year 1)', 'IGCSE Math (Accelerated)', 'IGCSE Math (Year 1)', 'IT (Year 1)', 'IT (Year 2)', 'Music', 'PE', 'Spanish I', 'Spanish II', 'World History I'],
+            grades: new Array(24).fill(''),
+            predictedScore: '',
+            isLoading: false
+        },
+        methods: {
+            async submit() {
+                console.log(this.grades);
+                // configure the array of grades into json
+                const grades_json = JSON.stringify(this.grades);
+                // send the json to the server's flask function named 'predict'
+                this.isLoading = true;
+                console.log(this.isLoading);
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: grades_json
+                });
+                const data = await response.json();              
+                this.predictedScore = data;
+                console.log
+                console.log(data)
+                console.log(this.predictedScore);
+                // Sort Predicted Score from High to Low
+                this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).sort(([,a],[,b]) => b-a));
+                // Get the first three highest scores
+                this.predictedScore = Object.fromEntries(Object.entries(this.predictedScore).slice(0, 10));
+                this.isLoading = false;
+            }
+        }
+    })
+</script>
